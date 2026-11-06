@@ -1,0 +1,31 @@
+.card{
+
+    width:280px;
+
+    padding:20px;
+
+    margin:20px;
+
+    border:2px solid gray;
+
+    border-radius:10px;
+
+    text-align:center;
+
+    background:#f9f9f9;
+
+    box-shadow:0px 0px 10px lightgray;
+
+}
+
+.card h2{
+
+    color:darkblue;
+
+}
+
+.card h3{
+
+    color:green;
+
+}

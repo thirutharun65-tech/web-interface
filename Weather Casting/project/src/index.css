@@ -1,0 +1,425 @@
+/* ─── Leaflet CSS (must precede @tailwind) ──────────────────────── */
+@import 'leaflet/dist/leaflet.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Variables (updated by React) ─────────────────────────── */
+:root {
+  --weather-primary: #ffffff;
+  --weather-secondary: #42a5f5;
+  --weather-accent: #ffd54f;
+  --weather-surface: rgba(255, 255, 255, 0.22);
+  --weather-surface-hover: rgba(255, 255, 255, 0.35);
+  --weather-border: rgba(255, 255, 255, 0.25);
+  --weather-text: #0d1b2a;
+  --weather-text-secondary: rgba(13, 27, 42, 0.75);
+  --weather-glow: rgba(255, 213, 79, 0.2);
+  --weather-bg: linear-gradient(180deg, #2196f3 0%, #42a5f5 30%, #64b5f6 60%, #bbdefb 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--weather-bg);
+  color: var(--weather-text);
+  min-height: 100vh;
+  transition: background 1.2s ease, color 0.8s ease;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Glass Surface ────────────────────────────────────────────── */
+.glass {
+  background: var(--weather-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--weather-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  transition: background 0.8s ease, border-color 0.8s ease, box-shadow 0.3s ease;
+}
+
+.glass-hover:hover {
+  background: var(--weather-surface-hover);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.glass-strong {
+  background: var(--weather-surface);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--weather-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* ─── Text Helpers ─────────────────────────────────────────────── */
+.text-primary { color: var(--weather-text); }
+.text-secondary { color: var(--weather-text-secondary); }
+.text-accent { color: var(--weather-accent); }
+
+/* ─── Scrollbar ────────────────────────────────────────────────── */
+.scroll-x {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--weather-border) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-x::-webkit-scrollbar {
+  height: 6px;
+}
+.scroll-x::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-x::-webkit-scrollbar-thumb {
+  background: var(--weather-border);
+  border-radius: 3px;
+}
+
+/* ─── Weather Effects Container ────────────────────────────────── */
+.weather-effects {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* ─── Sun Glow ─────────────────────────────────────────────────── */
+.sun-glow {
+  position: absolute;
+  top: -100px;
+  right: -50px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--weather-glow) 0%, transparent 70%);
+  animation: sunPulse 8s ease-in-out infinite;
+}
+
+@keyframes sunPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+/* ─── Clouds ───────────────────────────────────────────────────── */
+.cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 100px;
+  filter: blur(20px);
+  animation: cloudDrift linear infinite;
+}
+
+@keyframes cloudDrift {
+  from { transform: translateX(-300px); }
+  to { transform: translateX(calc(100vw + 300px)); }
+}
+
+/* ─── Rain ─────────────────────────────────────────────────────── */
+.rain-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.raindrop {
+  position: absolute;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, rgba(173, 216, 230, 0.6));
+  animation: rainFall linear infinite;
+}
+
+@keyframes rainFall {
+  0% { transform: translateY(-100vh); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0.3; }
+}
+
+/* ─── Heavy Rain ───────────────────────────────────────────────── */
+.raindrop-heavy {
+  position: absolute;
+  width: 3px;
+  background: linear-gradient(to bottom, transparent, rgba(173, 216, 230, 0.8));
+  animation: rainFallHeavy linear infinite;
+}
+
+@keyframes rainFallHeavy {
+  0% { transform: translateY(-100vh); opacity: 0; }
+  5% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0.5; }
+}
+
+/* ─── Snow ─────────────────────────────────────────────────────── */
+.snowflake {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  animation: snowFall linear infinite;
+}
+
+@keyframes snowFall {
+  0% { transform: translateY(-100vh) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translateY(50vh) translateX(20px); }
+  100% { transform: translateY(100vh) translateX(-20px); opacity: 0.3; }
+}
+
+/* ─── Fog Layers ───────────────────────────────────────────────── */
+.fog-layer {
+  position: absolute;
+  width: 200%;
+  height: 200px;
+  background: linear-gradient(90deg, transparent, rgba(200, 210, 220, 0.4), transparent);
+  filter: blur(30px);
+  animation: fogDrift linear infinite;
+}
+
+@keyframes fogDrift {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0%); }
+}
+
+/* ─── Lightning ────────────────────────────────────────────────── */
+.lightning {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0);
+  animation: lightningFlash 12s ease-in-out infinite;
+}
+
+@keyframes lightningFlash {
+  0%, 92%, 100% { background: rgba(255, 255, 255, 0); }
+  93% { background: rgba(255, 255, 255, 0.3); }
+  94% { background: rgba(255, 255, 255, 0); }
+  95% { background: rgba(255, 255, 255, 0.5); }
+  96% { background: rgba(255, 255, 255, 0); }
+}
+
+/* ─── Stars ─────────────────────────────────────────────────────── */
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* ─── Moon Glow ────────────────────────────────────────────────── */
+.moon-glow {
+  position: absolute;
+  top: 80px;
+  right: 100px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 230, 0.3) 0%, transparent 70%);
+  animation: moonPulse 6s ease-in-out infinite;
+}
+
+@keyframes moonPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.05); }
+}
+
+/* ─── Light Particles ──────────────────────────────────────────── */
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--weather-accent);
+  opacity: 0.3;
+  animation: floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+  0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+  10% { opacity: 0.3; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-100px) translateX(30px); opacity: 0; }
+}
+
+/* ─── Sun Path Arc ─────────────────────────────────────────────── */
+.sun-arc {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+}
+
+.sun-arc-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  border-bottom: 2px dashed var(--weather-border);
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+}
+
+.sun-arc-dot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--weather-accent);
+  box-shadow: 0 0 12px var(--weather-glow);
+  transform: translate(-50%, -50%);
+  transition: left 1s ease, top 1s ease;
+}
+
+/* ─── Compass ──────────────────────────────────────────────────── */
+.compass {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid var(--weather-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compass-needle {
+  position: absolute;
+  width: 4px;
+  height: 36px;
+  top: 4px;
+  left: calc(50% - 2px);
+  transform-origin: 50% 100%;
+  transition: transform 1s ease;
+}
+
+.compass-needle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 14px solid var(--weather-accent);
+}
+
+.compass-needle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 12px solid var(--weather-text-secondary);
+}
+
+/* ─── UV Progress Ring ─────────────────────────────────────────── */
+.uv-ring {
+  transform: rotate(-90deg);
+  transition: stroke-dashoffset 1s ease;
+}
+
+/* ─── Icon Animations ──────────────────────────────────────────── */
+.icon-spin {
+  animation: iconSpin 20s linear infinite;
+}
+@keyframes iconSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.icon-float {
+  animation: iconFloat 4s ease-in-out infinite;
+}
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.icon-glow {
+  animation: iconGlow 3s ease-in-out infinite;
+}
+@keyframes iconGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px var(--weather-glow)); }
+  50% { filter: drop-shadow(0 0 16px var(--weather-glow)); }
+}
+
+/* ─── Loading ──────────────────────────────────────────────────── */
+.skeleton-pulse {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.loading-spin {
+  animation: loadingSpin 1s linear infinite;
+}
+@keyframes loadingSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Focus States ─────────────────────────────────────────────── */
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--weather-accent);
+  outline-offset: 2px;
+}
+
+/* ─── Leaflet Overrides ────────────────────────────────────────── */
+.leaflet-container {
+  background: transparent !important;
+  border-radius: 16px;
+  z-index: 1;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.6) !important;
+  font-size: 10px !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--weather-surface) !important;
+  backdrop-filter: blur(16px);
+  color: var(--weather-text) !important;
+  border: 1px solid var(--weather-border) !important;
+}
+
+/* ─── Smooth Transitions ──────────────────────────────────────── */
+.smooth-transition {
+  transition: all 0.8s ease;
+}
+
+/* ─── Section Reveal ────────────────────────────────────────────── */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+}

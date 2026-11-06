@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-50: #F0EEFF;
+  --brand-100: #E4E0FC;
+  --brand-200: #C9C0F8;
+  --brand-300: #A99BF2;
+  --brand-400: #8B78ED;
+  --brand-500: #6C5CE7;
+  --brand-600: #5A49D4;
+  --brand-700: #4838B0;
+  --brand-800: #382C8C;
+  --brand-900: #2A2068;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply bg-ink-50 dark:bg-ink-950 text-ink-900 dark:text-ink-50 font-sans;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  * {
+    @apply border-ink-100 dark:border-ink-700;
+  }
+}
+
+@layer components {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-ink-200 dark:bg-ink-600 rounded-full;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* Density: compact */
+[data-density="compact"] {
+  --density-card: 0.75rem;
+  --density-row: 0.5rem;
+}
+[data-density="comfortable"],
+:root {
+  --density-card: 1rem;
+  --density-row: 0.75rem;
+}
+
+[data-density="compact"] .density-card {
+  @apply p-3;
+}
+[data-density="compact"] .density-row {
+  @apply py-2;
+}
+[data-density="compact"] .density-sidebar {
+  @apply py-1.5;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-ink-200 dark:bg-ink-700 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-ink-300 dark:bg-ink-600;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

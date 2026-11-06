@@ -1,0 +1,18 @@
+.card{
+
+    width:300px;
+    border:2px solid gray;
+    border-radius:10px;
+    padding:20px;
+    margin:20px;
+    box-shadow:0px 0px 10px lightgray;
+    text-align:center;
+    background:#f9f9f9;
+
+}
+
+.card h2{
+
+    color:darkblue;
+
+}
